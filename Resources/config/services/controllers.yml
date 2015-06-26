@@ -1,0 +1,19 @@
+parameters:
+    open_wide_service.controller.service_folder.view.class: OpenWide\ServiceBundle\Controller\ServiceFolderViewController
+    open_wide_service.controller.service_link.view.class:   OpenWide\ServiceBundle\Controller\ServiceLinkViewController
+  
+
+services:
+    service.controller.service_folder.view:
+        class: %open_wide_service.controller.service_folder.view.class%
+        arguments:
+            - @ezpublish.view_manager
+            - @security.context
+        parent: ezpublish.controller.content.view
+
+    service.controller.service_link.view:
+        class: %open_wide_service.controller.service_link.view.class%
+        arguments:
+            - @ezpublish.view_manager
+            - @security.context
+        parent: ezpublish.controller.content.view

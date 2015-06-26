@@ -1,0 +1,9 @@
+imports:
+    - { resource: services/controllers.yml }
+    - { resource: services/helpers.yml }
+
+services:
+    twig.extension.intl:
+        class: Twig_Extensions_Extension_Intl
+        tags:
+            - { name: twig.extension }

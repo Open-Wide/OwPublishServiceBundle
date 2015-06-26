@@ -1,0 +1,4 @@
+parameters:
+    # LocationId of Service
+    open_wide_service.root.location_id: 1420
+    open_wide_service.paginate.max_per_page: 10

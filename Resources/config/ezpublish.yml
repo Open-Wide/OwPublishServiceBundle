@@ -1,0 +1,30 @@
+    system:
+        cg85_group_front:
+            location_view:
+                full:
+                    service_folder:
+                        template: OpenWideServiceBundle:full:service_folder.html.twig
+                        controller: "service.controller.service_folder.view:viewLocation"
+                        match:
+                            Identifier\ContentType: service_folder
+
+                bloc:
+                    service_folder:
+                        template: OpenWideServiceBundle:bloc:service_folder.html.twig
+                        controller: "service.controller.service_folder.view:viewLocation"
+                        match:
+                            Identifier\ContentType: service_folder
+
+                line:
+                    service_link:
+                        template: OpenWideServiceBundle:line:service_link.html.twig
+                        controller: "service.controller.service_link.view:viewLocation"
+                        match:
+                            Identifier\ContentType: service_link
+
+                embed:
+                    service_link:
+                        template: OpenWideServiceBundle:embed:service_link.html.twig
+                        controller: "service.controller.service_link.view:viewLocation"
+                        match:
+                            Identifier\ContentType: service_link
