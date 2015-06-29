@@ -9,27 +9,70 @@ class ServiceFolderViewController extends ViewController
     {
         switch( $viewType ) {
             case 'full' :
+                $params += $this->getViewFullParamsFull($location,$viewType);
+                break;
             case 'bloc' :
-                $params += $this->getViewFullParams($location,$viewType);
+                $params += $this->getViewFullParamsBloc($location,$viewType);
                 break;
         }
 
         return parent::renderLocation( $location, $viewType, $layout, $params );
     }
 
-    protected function getViewFullParams($location,$viewType)
+    protected function getViewFullParamsFull($location,$viewType)
     {
+        /* @var $location eZ\Publish\Core\Repository\Values\Content\Location */
         $repository = $this->getRepository();
+        $request = $this->getRequest();
         $contentService = $repository->getContentService();
-
         $content = $contentService->loadContentByContentInfo( $location->getContentInfo() );
 
         $params = array(
             'location' => $location,
             'content' => $content
         );
+        $currentPage = $request->query->get('page', 1);
 
-        return $params;
+        $result = $this->container->get('open_wide_service.fetch_by_legacy')->getFolderChildrens(
+                    $location, 
+                    $this->container->getParameter('open_wide_service.paginate.max_per_page'), 
+                    $currentPage
+            );        
+        
+        $params['items'] = $result['items'];
+        $params['current_page'] = $result['current_page'];
+        $params['nb_pages'] = $result['nb_pages'];
+        $params['prev_page'] = $result['prev_page'];
+        $params['next_page'] = $result['next_page'];
+        $params['href_pagination'] = $result['base_href'];
+
+        return $params;        
+        
+        
+    }
+
+    protected function getViewFullParamsBloc($location,$viewType)
+    {
+        /* @var $location eZ\Publish\Core\Repository\Values\Content\Location */
+        $repository = $this->getRepository();
+        $request = $this->getRequest();
+        $contentService = $repository->getContentService();
+        $content = $contentService->loadContentByContentInfo( $location->getContentInfo() );
+        $currentUser = $repository->getCurrentUser();
+        $params = array(
+            'location' => $location,
+            'content' => $content
+        );
+
+        $result = $this->container->get('open_wide_service.fetch_by_legacy')->getLinkForUser(
+                    $location, 
+                    $currentUser,
+                    $this->container->getParameter('open_wide_service.root.max_per_block')
+            );        
+        
+        $params['items'] = $result;
+
+        return $params;        
     }
 
     /**

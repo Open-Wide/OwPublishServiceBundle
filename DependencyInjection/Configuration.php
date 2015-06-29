@@ -25,6 +25,7 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('root')
                     ->children()
                         ->integerNode('location_id')->min(0)->defaultValue(2)->end()
+                        ->integerNode('max_per_block')->min(1)->defaultValue(9)->end()
                     ->end()
                 ->end()
                 ->arrayNode('paginate')
