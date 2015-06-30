@@ -1,0 +1,42 @@
+<?php
+// This array contains the database schema
+$schema = array(
+    'service_subscription' => array(
+        'name' => 'service_subscription',
+        'fields' => array(
+            'id' => array(
+                'type' => 'auto_increment',
+                'default' => false,
+            ),         
+            'user_id' => array(
+                'length' => 11,
+                'type' => 'int',
+                'not_null' => TRUE,
+                'default' => FALSE,
+            ),
+            'service_link_id' => array(
+                'length' => 11,
+                'type' => 'int',
+                'not_null' => TRUE,
+                'default' => FALSE,
+            )
+        ),
+        'indexes' => array(
+                'PRIMARY' => array(
+                        'type' => 'primary',
+                        'fields' => array( 'id' ),
+                ),
+                'user_id' => array(
+                        'type' => 'non-unique',
+                        'fields' => array( 'user_id' ),
+                ),
+                'service_link_id' => array(
+                        'type' => 'non-unique',
+                        'fields' => array( 'service_link_id' ),
+                ),
+        ),
+    ),
+    '_info' => array( 'format' => 'generic', ),
+);
+
+?>
