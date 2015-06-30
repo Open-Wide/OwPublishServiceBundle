@@ -46,12 +46,9 @@ class FetchByLegacy extends ContainerAware {
      * @var container
      */
     protected $container;
-    
-
     private $ContentService;
     private $LocationService;
     private $SearchService;
-
 
     public function __construct($container) {
         $this->container = $container;
@@ -246,10 +243,10 @@ class FetchByLegacy extends ContainerAware {
      * @param type $currentPage
      * @return type
      */
-    public function getFolderChildrens(\eZ\Publish\Core\Repository\Values\Content\Location $location, $maxPerPage, $currentPage = 1) {
+    public function getFolderChildrens(\eZ\Publish\Core\Repository\Values\Content\Location $location, $currentUser, $maxPerPage, $currentPage = 1) {
 
         $criteria = array(
-            new Criterion\ParentLocationId($location->parentLocationId),
+            new Criterion\ParentLocationId($location->id),
             new Criterion\ContentTypeIdentifier(array('service_link')),
             new Criterion\Visibility(Criterion\Visibility::VISIBLE),
         );
@@ -259,9 +256,18 @@ class FetchByLegacy extends ContainerAware {
             $this->sortClauseAuto($location)
         );
 
-        $pagerfanta = new Pagerfanta(
-            new ContentSearchAdapter( $query, $this->repository->getSearchService() )
-        );        
+        $searchResult = $this->repository->getSearchService()->findContent($query);
+
+        $content = array();
+        foreach ($searchResult->searchHits as $serviceLink) {
+            $content[] = array(
+                'serviceLink' => $serviceLink->valueObject->contentInfo->mainLocationId,
+            );
+        }
+
+        $result['offset'] = ($currentPage - 1) * $maxPerPage;
+        $adapter = new ArrayAdapter($content);
+        $pagerfanta = new Pagerfanta($adapter);
 
         $pagerfanta->setMaxPerPage($maxPerPage);
         $pagerfanta->setCurrentPage($currentPage);
@@ -304,7 +310,7 @@ class FetchByLegacy extends ContainerAware {
             $children[]['serviceLink'] = $searchHit->valueObject;
         }
 
-        return $children;        
+        return $children;
     }
 
     function getChildren($parentNodeId) {
@@ -365,8 +371,6 @@ class FetchByLegacy extends ContainerAware {
         }
     }
 
-
-    
     /**
      * Renvoie l'objet de l'image correspondant au contentId
      * @param type $contentId
@@ -380,7 +384,7 @@ class FetchByLegacy extends ContainerAware {
         }
         return $contentImage;
     }
-    
+
     public function loadService($service) {
         $attribut = $service . 'Service';
         $function = 'get' . $attribut;
@@ -388,5 +392,6 @@ class FetchByLegacy extends ContainerAware {
             $this->{$attribut} = call_user_func(array($this->repository, $function));
         }
         return $this->{$attribut};
-    }    
+    }
+
 }

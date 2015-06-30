@@ -31,14 +31,21 @@ class ServiceFolderViewController extends ViewController
             'location' => $location,
             'content' => $content
         );
+        
+        $currentUser = $repository->getCurrentUser();
         $currentPage = $request->query->get('page', 1);
 
         $result = $this->container->get('open_wide_service.fetch_by_legacy')->getFolderChildrens(
                     $location, 
+                    $currentUser,
                     $this->container->getParameter('open_wide_service.paginate.max_per_page'), 
                     $currentPage
             );        
-        
+//        
+//        print "<pre>";
+//        print_r($result);
+//        print "<pre>";
+//        exit();        
         $params['items'] = $result['items'];
         $params['current_page'] = $result['current_page'];
         $params['nb_pages'] = $result['nb_pages'];

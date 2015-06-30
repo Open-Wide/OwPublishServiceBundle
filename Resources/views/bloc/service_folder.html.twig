@@ -1,3 +1,17 @@
 <!-- START BLOCK SERVICE FOLDER -->
-
+{% if items and items|length > 0 %}
+    <div class="row">
+        <div class="col-md-12">
+            {% for content in items %}
+                {{ render( controller( "ez_content:viewLocation", {
+                    "locationId": content['serviceLink'].contentInfo.mainLocationId,
+                    "viewType": "line",
+                    "params": {  }
+                } ) )
+                }}   
+            {% endfor %}    
+            <br/><a href="{{ path( 'ez_urlalias', {'locationId':location.id} ) }}">Paramètrer vos services</a>
+        </div>
+    </div>
+{% endif %} 
 <!-- END BLOCK SERVICE FOLDER -->

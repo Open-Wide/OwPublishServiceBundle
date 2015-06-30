@@ -1,3 +1,49 @@
-<!-- START FULL SERVICE FOLDER -->
+<!-- START VUE FULL SERVICE LISTE -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-12"><h2>{{ ez_field_value(content, 'title') }}</h2></div>
+        </div>
 
-<!-- END FULL SERVICE FOLDER -->
+        {% if items %}
+            {% for content in items %}
+
+                {{ render( controller( "ez_content:viewLocation", {
+                        "locationId": content['serviceLink'],
+                        "viewType": "embed",
+                        "params": { "loop": loop.index  }
+                    } ) )
+                }}                                     
+
+            {% endfor %}
+
+            {% if nb_pages > 1 %}
+                <nav style="text-align: center">
+                    <ul class="pagination">
+                        {% if prev_page > 0 %}
+                            <li>
+                                <a href="{{ href_pagination }}&page={{ prev_page }}" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% for i in 1..nb_pages %}
+                            <li {% if (i == current_page) %} class="active" {% endif %}><a href="{{ href_pagination }}&page={{ i }}">{{ i }}</a></li>
+                            {% endfor %}
+                            {% if next_page > 0 %}
+                            <li>
+                                <a href="{{ href_pagination }}&page={{ next_page }}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% else %}
+                <nav style="text-align: center">&nbsp;<br/>&nbsp;</nav>
+                {% endif %}
+
+        {% endif %}
+    </div>
+</div>
+<!-- END VUE FULL SERVICE LISTE -->

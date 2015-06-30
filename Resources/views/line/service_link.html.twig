@@ -1,1 +1,8 @@
-<p><span class="title"><a href="{{ path( 'ez_urlalias', {'locationId':content.contentInfo.mainLocationId} ) }}?liste={{liste}}">{{ ez_field_value(content,'title' )}}</a></span></p>
+<!-- START LINE SERVICE LINK -->
+<a href="{{ ez_field_value(content,'url' )}}">
+        {% set image= get_content(ez_field_value(content,"logo" )) %}
+        {% if image %}
+                    {{ ez_render_field( image, "image", {parameters:{ alias:'service_link', no_tag: true} } ) }}
+        {% endif %} 
+</a>
+<!-- END LINE SERVICE LINK -->
