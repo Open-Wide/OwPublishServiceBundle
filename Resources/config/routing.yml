@@ -1,4 +1,10 @@
-#openwide_service_inscription:
-#    path:     /service/inscription/events.json
-#    defaults: { _controller: OpenWideServiceBundle:Json:eventsListJSON, _format: json }
-#    requirements: { _format: (xml|json), _method: GET }
+openwide_service_subscription:
+    path:     /service/subscription/{userId}/{serviceLinkId}/{status}
+    defaults: { _controller: OpenWideServiceBundle:Subscription:addSubscription, _format: json }
+    requirements: 
+        _format: (xml|json)
+        _method: GET
+        userId: \d*
+        serviceLinkId: \d*
+        status: \d*
+ 

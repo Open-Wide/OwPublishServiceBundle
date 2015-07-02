@@ -41,17 +41,15 @@ class ServiceFolderViewController extends ViewController
                     $this->container->getParameter('open_wide_service.paginate.max_per_page'), 
                     $currentPage
             );        
-//        
-//        print "<pre>";
-//        print_r($result);
-//        print "<pre>";
-//        exit();        
+     
         $params['items'] = $result['items'];
         $params['current_page'] = $result['current_page'];
         $params['nb_pages'] = $result['nb_pages'];
         $params['prev_page'] = $result['prev_page'];
         $params['next_page'] = $result['next_page'];
         $params['href_pagination'] = $result['base_href'];
+        $params['options'] = $result['options'];
+        $params['currentUserId'] = $currentUser->id;
 
         return $params;        
         
