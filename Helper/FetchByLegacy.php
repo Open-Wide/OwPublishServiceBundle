@@ -53,14 +53,19 @@ class FetchByLegacy extends ContainerAware {
      * @param type $currentPage
      * @return type
      */
-    public function getFolderChildrens(\eZ\Publish\Core\Repository\Values\Content\Location $location, $currentUser, $maxPerPage, $currentPage = 1) {
+    public function getFolderChildrens(\eZ\Publish\Core\Repository\Values\Content\Location $location, $currentUser, $maxPerPage, $currentPage = 1,$category) {
 
         $criteria = array(
             new Criterion\ParentLocationId($location->id),
             new Criterion\ContentTypeIdentifier(array('service_link')),
             new Criterion\Visibility(Criterion\Visibility::VISIBLE),
-            new Criterion\Field('category2', Criterion\Operator::CONTAINS, '0'),
+            
         );
+        
+        if(isset($category)){
+            $criteria[] = new Criterion\Field('category', Criterion\Operator::CONTAINS, $category);
+        }
+        
         $query = new Query();
         $query->filter = new Criterion\LogicalAnd($criteria);
         $query->sortClauses = array(
@@ -92,13 +97,24 @@ class FetchByLegacy extends ContainerAware {
 
         $pagerfanta->setMaxPerPage($maxPerPage);
         $pagerfanta->setCurrentPage($currentPage);
+        
+
+        $httpReferer = $_SERVER['SCRIPT_URL'];
+        
+        if(isset($category)){
+            $httpReferer .= "?category=".$category;
+        }else{
+            $httpReferer .= "?";
+        }
+
+        
 
         $result['offset'] = ($currentPage - 1) * $maxPerPage;
         $result['prev_page'] = $pagerfanta->hasPreviousPage() ? $pagerfanta->getPreviousPage() : 0;
         $result['next_page'] = $pagerfanta->hasNextPage() ? $pagerfanta->getNextPage() : 0;
         $result['nb_pages'] = $pagerfanta->getNbPages();
         $result['items'] = $pagerfanta->getCurrentPageResults();
-        $result['base_href'] = "?";
+        $result['base_href'] = $httpReferer;
         $result['current_page'] = $pagerfanta->getCurrentPage();
         $result['options'] = isset($contentId)?$this->getCategorie($contentId,"ezselection"):array();
 
@@ -285,7 +301,7 @@ class FetchByLegacy extends ContainerAware {
         $serviceInfo = $this->loadService('Content')->loadContentInfo($contentId);
         
         /* @var $contentImage \eZ\Publish\Core\Repository\Values\ContentType\FieldDefinition */
-        $fieldDefinitionCategorie = $contentTypeService->loadContentType( $serviceInfo->contentTypeId)->getFieldDefinition( "category2" );
+        $fieldDefinitionCategorie = $contentTypeService->loadContentType( $serviceInfo->contentTypeId)->getFieldDefinition( "category" );
         $fieldSettings = $fieldDefinitionCategorie->getFieldSettings();
         return $fieldSettings['options'];
     }

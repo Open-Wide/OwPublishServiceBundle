@@ -34,12 +34,14 @@ class ServiceFolderViewController extends ViewController
         
         $currentUser = $repository->getCurrentUser();
         $currentPage = $request->query->get('page', 1);
+        $category = $request->query->get('category', null);
 
         $result = $this->container->get('open_wide_service.fetch_by_legacy')->getFolderChildrens(
                     $location, 
                     $currentUser,
                     $this->container->getParameter('open_wide_service.paginate.max_per_page'), 
-                    $currentPage
+                    $currentPage,
+                    $category
             );        
      
         $params['items'] = $result['items'];
