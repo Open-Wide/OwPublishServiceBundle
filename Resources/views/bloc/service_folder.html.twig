@@ -13,5 +13,11 @@
             <br/><a href="{{ path( 'ez_urlalias', {'locationId':location.id} ) }}">Paramètrer vos services</a>
         </div>
     </div>
-{% endif %} 
+{% else %}
+    <div class="row">
+        <div class="col-md-12">
+            <a href="{{ path( 'ez_urlalias', {'locationId':location.id} ) }}">Paramètrer vos services</a>
+        </div>
+    </div>
+{% endif%}
 <!-- END BLOCK SERVICE FOLDER -->
