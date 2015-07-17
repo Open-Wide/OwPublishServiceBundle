@@ -1,6 +1,6 @@
 <?php
 
-namespace OpenWide\ServiceBundle\Controller;
+namespace OpenWide\Publish\ServiceBundle\Controller;
 
 class ServiceLinkViewController extends ViewController
 {

@@ -7,7 +7,7 @@
  * @version //autogentag//
  */
 
-namespace OpenWide\ServiceBundle\Controller;
+namespace OpenWide\Publish\ServiceBundle\Controller;
 
 use eZ\Publish\API\Repository\Values\Content\Location;
 use eZ\Publish\Core\Base\Exceptions\NotFoundException;

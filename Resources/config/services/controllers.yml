@@ -1,6 +1,6 @@
 parameters:
-    open_wide_service.controller.service_folder.view.class: OpenWide\ServiceBundle\Controller\ServiceFolderViewController
-    open_wide_service.controller.service_link.view.class:   OpenWide\ServiceBundle\Controller\ServiceLinkViewController
+    open_wide_service.controller.service_folder.view.class: OpenWide\Publish\ServiceBundle\Controller\ServiceFolderViewController
+    open_wide_service.controller.service_link.view.class:   OpenWide\Publish\ServiceBundle\Controller\ServiceLinkViewController
   
 
 services:

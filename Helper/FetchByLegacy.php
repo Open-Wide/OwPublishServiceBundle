@@ -1,13 +1,12 @@
 <?php
 
-namespace OpenWide\ServiceBundle\Helper;
+namespace OpenWide\Publish\ServiceBundle\Helper;
 
 use Symfony\Component\DependencyInjection\ContainerAware;
 use eZ\Publish\API\Repository\Values\Content\Query;
 use eZ\Publish\API\Repository\Values\Content\Query\Criterion;
 use eZ\Publish\API\Repository\Values\Content\Query\SortClause;
 use Pagerfanta\Adapter\ArrayAdapter;
-use eZ\Publish\Core\Pagination\Pagerfanta\ContentSearchAdapter;
 use Pagerfanta\Pagerfanta;
 use ServiceSubscription;
 

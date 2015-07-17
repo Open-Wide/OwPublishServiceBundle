@@ -37,14 +37,14 @@ Installation via composer
 
     <?php
     // ezpublish/EzPublishKernel.php
-    use OpenWide\ServiceBundle;
+    use OpenWide\Publish\ServiceBundle;
     ...
 
     public function registerBundles()
     {
       $bundles = array(
         // ...
-        new OpenWide\ServiceBundle\OpenWideServiceBundle(),
+        new OpenWide\Publish\ServiceBundle\OpenWidePublishServiceBundle(),
       );
     }
 

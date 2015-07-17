@@ -1,7 +1,7 @@
 {
   "name": "open-wide/ezpublish-service-bundle",
   "description": "For Ez Publish 5, provides a complete system to create and show service in ezflow block and full page",
-  "homepage": "https://github.com/Open-Wide/OwServiceBundle",
+  "homepage": "https://github.com/Open-Wide/OwPublishServiceBundle",
   "license": "GPL-3.0+",
   "keywords": ["ezpublish", "service", "link"],
   "authors": [
@@ -17,8 +17,8 @@
     "symfony/symfony": ">=2.3"
   },
   "autoload": {
-    "psr-0": { "OpenWide\\ServiceBundle": "" }
+    "psr-0": { "OpenWide\\Publish\\ServiceBundle": "" }
   },
 
-  "target-dir": "OpenWide/ServiceBundle"
+  "target-dir": "OpenWide/Publish/ServiceBundle"
 }
