@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <software>
     <metadata>
-        <name>Open Wide Service Bundle</name>
+        <name>Open Wide Publish Service Bundle</name>
         <version>5.4.0</version>
         <copyright>Copyright (C) 2015 - Open Wide SI</copyright>
         <license>GNU General Public License</license>
