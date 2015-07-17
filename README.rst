@@ -62,7 +62,7 @@ Installation via composer
 .. code-block:: yml
 
         # LocationId of Service folder
-        open_wide_service:
+        open_wide_publish_service:
             root:
                 location_id: ....
              # Nb of element per page

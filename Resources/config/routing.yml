@@ -1,6 +1,6 @@
 openwide_service_subscription:
     path:     /service/subscription/{userId}/{serviceLinkId}/{status}
-    defaults: { _controller: OpenWideServiceBundle:Subscription:addSubscription, _format: json }
+    defaults: { _controller: OpenWidePublishServiceBundle:Subscription:addSubscription, _format: json }
     requirements: 
         _format: (xml|json)
         _method: GET
