@@ -4,9 +4,6 @@ namespace OpenWide\Publish\ServiceBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
 use eZ\Bundle\EzPublishCoreBundle\Controller;
-use eZ\Publish\API\Repository\Values\Content\Query;
-use eZ\Publish\API\Repository\Values\Content\Query\Criterion;
-use eZ\Publish\API\Repository\Values\Content\Query\SortClause;
 
 class SubscriptionController extends Controller {
 
@@ -21,7 +18,7 @@ class SubscriptionController extends Controller {
             );
                 
         // On vérifie le status de l'abonnement actif ou pas
-        $subscription =  $container->get('open_wide_service.fetch_by_legacy')->fetchByUserAndServiceLink($userId, $serviceLinkId,true);
+        $subscription =  $container->get('open_wide_service.fetch_by_legacy')->fetchByUserAndServiceLink($userId, $serviceLinkId,true,true);
         
         if(!$subscription && $status==1){
             $newSubscription = $container->get('open_wide_service.fetch_by_legacy')->addServiceLink($userId,$serviceLinkId);

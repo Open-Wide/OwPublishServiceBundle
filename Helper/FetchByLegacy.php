@@ -9,14 +9,14 @@ use eZ\Publish\API\Repository\Values\Content\Query\SortClause;
 use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Pagerfanta;
 use ServiceSubscription;
-
+use Monolog\Logger;
 
 class FetchByLegacy extends ContainerAware {
 
     /**
      * @var \Closure
      */
-    private $legacyKernelClosure;
+    protected $legacyKernelClosure;
 
     /**
      * @var repository
@@ -27,13 +27,15 @@ class FetchByLegacy extends ContainerAware {
      * @var container
      */
     protected $container;
-    private $ContentService;
-    private $LocationService;
-    private $SearchService;
+    protected $ContentService;
+    protected $LocationService;
+    protected $SearchService;
+    protected $logger;
 
     public function __construct($container) {
         $this->container = $container;
         $this->repository = $this->container->get('ezpublish.api.repository');
+        $this->logger = $this->container->get('logger');
     }
 
     protected function getLegacyKernel() {
@@ -52,19 +54,18 @@ class FetchByLegacy extends ContainerAware {
      * @param type $currentPage
      * @return type
      */
-    public function getFolderChildrens(\eZ\Publish\Core\Repository\Values\Content\Location $location, $currentUser, $maxPerPage, $currentPage = 1,$category) {
+    public function getFolderChildrens(\eZ\Publish\Core\Repository\Values\Content\Location $location, $currentUser, $maxPerPage, $currentPage = 1, $category) {
 
         $criteria = array(
             new Criterion\ParentLocationId($location->id),
             new Criterion\ContentTypeIdentifier(array('service_link')),
             new Criterion\Visibility(Criterion\Visibility::VISIBLE),
-            
         );
-        
-        if(isset($category)){
+
+        if (isset($category)) {
             $criteria[] = new Criterion\Field('category', Criterion\Operator::CONTAINS, $category);
         }
-        
+
         $query = new Query();
         $query->filter = new Criterion\LogicalAnd($criteria);
         $query->sortClauses = array(
@@ -79,11 +80,11 @@ class FetchByLegacy extends ContainerAware {
         $content = array();
         $contentId = null;
         foreach ($searchResult->searchHits as $serviceLink) {
-            
-            if(!$contentId) {
+
+            if (!$contentId) {
                 $contentId = $serviceLink->valueObject->getVersionInfo()->getContentInfo()->id;
             }
-            
+
             $content[] = array(
                 'serviceLink' => $serviceLink->valueObject->contentInfo->mainLocationId,
                 'subscrition' => $this->hasSubscription($subscritions, $serviceLink->valueObject->getVersionInfo()->getContentInfo()->id)
@@ -96,17 +97,15 @@ class FetchByLegacy extends ContainerAware {
 
         $pagerfanta->setMaxPerPage($maxPerPage);
         $pagerfanta->setCurrentPage($currentPage);
-        
+
 
         $httpReferer = $_SERVER['SCRIPT_URL'];
-        
-        if(isset($category)){
-            $httpReferer .= "?category=".$category;
-        }else{
+
+        if (isset($category)) {
+            $httpReferer .= "?category=" . $category;
+        } else {
             $httpReferer .= "?";
         }
-
-        
 
         $result['offset'] = ($currentPage - 1) * $maxPerPage;
         $result['prev_page'] = $pagerfanta->hasPreviousPage() ? $pagerfanta->getPreviousPage() : 0;
@@ -115,7 +114,7 @@ class FetchByLegacy extends ContainerAware {
         $result['items'] = $pagerfanta->getCurrentPageResults();
         $result['base_href'] = $httpReferer;
         $result['current_page'] = $pagerfanta->getCurrentPage();
-        $result['options'] = isset($contentId)?$this->getCategorie($contentId,"ezselection"):array();
+        $result['options'] = isset($contentId) ? $this->getCategorie($contentId, "ezselection") : array();
 
         return $result;
     }
@@ -169,7 +168,7 @@ class FetchByLegacy extends ContainerAware {
         return $children;
     }
 
-    function getChildren($parentNodeId) {
+    public function getChildren($parentNodeId) {
 
         $criteria = array(
             new Criterion\ParentLocationId($parentNodeId->valueObject->contentInfo->mainLocationId),
@@ -250,7 +249,7 @@ class FetchByLegacy extends ContainerAware {
         return $this->{$attribut};
     }
 
-    public function fetchByUserId($userId,$asObject=false) {
+    public function fetchByUserId($userId, $asObject = false) {
         return $this->getLegacyKernel()->runCallback(
                         function () use ( $userId) {
                     return ServiceSubscription::fetchByUserId($userId, $asObject);
@@ -258,25 +257,54 @@ class FetchByLegacy extends ContainerAware {
         );
     }
 
-    public function fetchByUserAndServiceLink($userId, $serviceLinkId, $asObject = false) {
-        return $this->getLegacyKernel()->runCallback(
-                        function () use ( $userId, $serviceLinkId,$asObject) {
-                    return ServiceSubscription::fetchByUserAndServiceLink($userId, $serviceLinkId, $asObject);
-                }
-        );
+    /**
+     * Renvoie l'abonnement correspondant au user et service
+     * @param type $userId
+     * @param type $serviceLinkId
+     * @param type $callback
+     * @param type $asObject
+     * @return type
+     */
+    public function fetchByUserAndServiceLink($userId, $serviceLinkId, $callback = true, $asObject = false) {
+
+        if ($callback) {
+            return $this->getLegacyKernel()->runCallback(
+                            function () use ( $userId, $serviceLinkId, $asObject) {
+                        $result = ServiceSubscription::fetchByUserAndServiceLink($userId, $serviceLinkId, $asObject);
+                        return $result;
+                    }
+            );
+        } else {
+            return ServiceSubscription::fetchByUserAndServiceLink($userId, $serviceLinkId, $asObject);
+        }
     }
 
-    public function addServiceLink($userId, $serviceLinkId) {
+    /**
+     * Ajouter un abonnement pour un utilisateur
+     * @param type $userId
+     * @param type $serviceLinkId
+     * @param type $callback
+     * @return type
+     */
+    public function addServiceLink($userId, $serviceLinkId, $callback = true) {
 
-        $params = array('user_id' => $userId, 'service_link_id' => $serviceLinkId);
+        try {
+            $params = array('user_id' => $userId, 'service_link_id' => $serviceLinkId);
 
-        $serviceSubscription = $this->getLegacyKernel()->runCallback(
-                function () use ( $params ) {
-            return ServiceSubscription::create($params);
+            if ($callback) {
+                $serviceSubscription = $this->getLegacyKernel()->runCallback(
+                        function () use ( $params ) {
+                    return ServiceSubscription::create($params);
+                }
+                );
+            } else {
+                $serviceSubscription = ServiceSubscription::create($params);
+            }
+            $serviceSubscription->store();
+            return $serviceSubscription;
+        } catch (Exception $e) {
+            return $e->getMessage();
         }
-        );
-        $serviceSubscription->store();
-        return $serviceSubscription;
     }
 
     /**
@@ -294,17 +322,36 @@ class FetchByLegacy extends ContainerAware {
      *   )
      *   )
      */
-    public function getCategorie($contentId,$identifier){
-        
+    public function getCategorie($contentId, $identifier) {
+
         $contentTypeService = $this->repository->getContentTypeService();
         $serviceInfo = $this->loadService('Content')->loadContentInfo($contentId);
-        
+
         /* @var $contentImage \eZ\Publish\Core\Repository\Values\ContentType\FieldDefinition */
-        $fieldDefinitionCategorie = $contentTypeService->loadContentType( $serviceInfo->contentTypeId)->getFieldDefinition( "category" );
+        $fieldDefinitionCategorie = $contentTypeService->loadContentType($serviceInfo->contentTypeId)->getFieldDefinition("category");
         $fieldSettings = $fieldDefinitionCategorie->getFieldSettings();
         return $fieldSettings['options'];
     }
-    
+
+    public function getServiceByCode($code) {
+
+        $criteria = array(
+            new Criterion\ContentTypeIdentifier(array('service_link')),
+            new Criterion\Visibility(Criterion\Visibility::VISIBLE),
+            new Criterion\Field('code', Criterion\Operator::EQ, $code)
+        );
+
+        $query = new Query();
+        $query->filter = new Criterion\LogicalAnd($criteria);
+        $searchResult = $this->repository->getSearchService()->findContent($query);
+
+        if (isset($searchResult->searchHits)) {
+            return $searchResult->searchHits;
+        } else {
+            return array();
+        }
+    }
+
     public function debug($var) {
         print "<pre>" . print_r($var, true) . "</pre>";
         exit();
