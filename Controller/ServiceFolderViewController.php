@@ -34,7 +34,7 @@ class ServiceFolderViewController extends ViewController
         
         $currentUser = $repository->getCurrentUser();
         $currentPage = $request->query->get('page', 1);
-        print $category = $request->query->get('category', 'all');
+        $category = $request->query->get('category', 'all');
 
         $result = $this->container->get('open_wide_service.fetch_by_legacy')->getFolderChildrens(
                     $location, 
