@@ -7,7 +7,7 @@ use eZ\Bundle\EzPublishCoreBundle\Controller;
 
 class SubscriptionController extends Controller {
 
-    public function addSubscriptionAction($userId,$serviceLinkId,$status) {
+    public function addSubscriptionAction($userId,$serviceLinkId,$status,$locationIdServiceFolder) {
 
         $container = $this->container;
         
@@ -22,7 +22,8 @@ class SubscriptionController extends Controller {
         
         if(!$subscription && $status==1){
             $newSubscription = $container->get('open_wide_service.fetch_by_legacy')->addServiceLink($userId,$serviceLinkId);
-            $container->get('open_wide_service.fetch_by_legacy')->debug($newSubscription);
+            //$container->get('open_wide_service.fetch_by_legacy')->debug($newSubscription);
+            
             $content['action'] = 'add';
         }
 
@@ -30,6 +31,17 @@ class SubscriptionController extends Controller {
             $subscription->remove();
             $content['action'] = 'remove';
         }
+        
+        
+        $rootLocationId = $this->container->getParameter('open_wide_service.root.location_id');
+        $rootLocationId = intval($rootLocationId);
+        if(!empty($rootLocationId)){
+            $locationIds[] = $rootLocationId;
+        }
+        $locationIds[] = $locationIdServiceFolder;
+        
+        $this->container->get('open_wide_service.cache')->purge($locationIds);
+
         
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');

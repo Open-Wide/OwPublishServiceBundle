@@ -1,5 +1,5 @@
 openwide_service_subscription:
-    path:     /service/subscription/{userId}/{serviceLinkId}/{status}
+    path:     /service/subscription/{userId}/{serviceLinkId}/{status}/{locationIdServiceFolder}
     defaults: { _controller: OpenWidePublishServiceBundle:Subscription:addSubscription, _format: json }
     requirements: 
         _format: (xml|json)
@@ -7,4 +7,5 @@ openwide_service_subscription:
         userId: \d*
         serviceLinkId: \d*
         status: \d*
+        locationIdServiceFolder: \d*
  

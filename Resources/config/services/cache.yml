@@ -1,0 +1,8 @@
+parameters:
+    ezpublish.http_cache.purge_client.fos.class: OpenWide\Publish\ServiceBundle\Cache\Http\FOSPurgeClient
+
+services:
+    open_wide_service.cache:
+        class: %ezpublish.http_cache.purge_client.fos.class%
+        arguments: [@fos_http_cache.cache_manager]
+

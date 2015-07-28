@@ -1,6 +1,7 @@
 imports:
     - { resource: services/controllers.yml }
     - { resource: services/helpers.yml }
+    - { resource: services/cache.yml }
 
 services:
     twig.extension.intl:

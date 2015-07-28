@@ -8,6 +8,7 @@ $(document).ready(function () {
         
         var userId = tab[1];
         var serviceLinkId = tab[2];
+        var locationIdServiceFolder = tab[3];
         var status = 0;
 
         if($(this).is(":checked")) {
@@ -15,7 +16,7 @@ $(document).ready(function () {
         }
 
         $.ajax({
-            url: '/service/subscription/'+userId+'/'+serviceLinkId+'/'+status,
+            url: '/service/subscription/'+userId+'/'+serviceLinkId+'/'+status+'/'+locationIdServiceFolder,
             type: 'GET',
             dataType: 'html',
             
