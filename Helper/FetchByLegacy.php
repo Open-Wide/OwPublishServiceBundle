@@ -62,7 +62,7 @@ class FetchByLegacy extends ContainerAware {
             new Criterion\Visibility(Criterion\Visibility::VISIBLE),
         );
 
-        if (isset($category)) {
+        if (isset($category) && $category!="all") {
             $criteria[] = new Criterion\Field('category', Criterion\Operator::CONTAINS, $category);
         }
 

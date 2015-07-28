@@ -6,7 +6,7 @@
         <ul>
             {% for key,option in options %}
                 <li>
-                    <a href="?category={{key}}">{{option}}</a>
+                    <a href="?category={{key}}">{% if category != "all" and  category == key %}<b>{{option}}</b>{% else %}{{option}}{% endif %}</a>
                 </li>
             {% endfor %}
             <li><a href="?">Tous les services</a></li>

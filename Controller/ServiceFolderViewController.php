@@ -34,7 +34,7 @@ class ServiceFolderViewController extends ViewController
         
         $currentUser = $repository->getCurrentUser();
         $currentPage = $request->query->get('page', 1);
-        $category = $request->query->get('category', null);
+        print $category = $request->query->get('category', 'all');
 
         $result = $this->container->get('open_wide_service.fetch_by_legacy')->getFolderChildrens(
                     $location, 
@@ -52,6 +52,7 @@ class ServiceFolderViewController extends ViewController
         $params['href_pagination'] = $result['base_href'];
         $params['options'] = $result['options'];
         $params['currentUserId'] = $currentUser->id;
+        $params['category'] = $category;
 
         return $params;        
         
