@@ -46,9 +46,9 @@ class FOSPurgeClient implements PurgeClientInterface
 
         $this->cacheManager->invalidate( array( 'X-Location-Id' => '(' . implode( '|', $locationIds ) . ')' ) );
 
-        $monolog = new Logger('purgecache');
+        /*$monolog = new Logger('purgecache');
         $monolog->pushHandler(new StreamHandler('purgecache.log', Logger::NOTICE));
-        $monolog->addNotice('Invalidation : ' . implode( '|', $locationIds ));
+        $monolog->addNotice('Invalidation : ' . implode( '|', $locationIds ));*/
     }
 
     public function purgeAll()
