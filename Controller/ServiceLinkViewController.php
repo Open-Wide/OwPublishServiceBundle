@@ -63,6 +63,6 @@ class ServiceLinkViewController extends ViewController
      * return OpenWide\Bundle\ServiceBundle\Helper\FetchByLegacy
      */
     public function getLegacyContentService() {
-        return $this->container->get( 'open_wide_service.helper' );
+        return $this->container->get( 'open_wide_publish_service.helper' );
     }
 }

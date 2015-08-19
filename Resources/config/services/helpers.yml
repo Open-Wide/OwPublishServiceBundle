@@ -1,7 +1,7 @@
 parameters:
-    open_wide_service.fetch_by_legacy.class: 'OpenWide\Publish\ServiceBundle\Helper\FetchByLegacy'
+    open_wide_publish_service.fetch_by_legacy.class: 'OpenWide\Publish\ServiceBundle\Helper\FetchByLegacy'
 
 services:
-    open_wide_service.fetch_by_legacy:
-        class: %open_wide_service.fetch_by_legacy.class%
+    open_wide_publish_service.fetch_by_legacy:
+        class: %open_wide_publish_service.fetch_by_legacy.class%
         arguments: [@service_container]

@@ -36,10 +36,10 @@ class ServiceFolderViewController extends ViewController
         $currentPage = $request->query->get('page', 1);
         $category = $request->query->get('category', 'all');
 
-        $result = $this->container->get('open_wide_service.fetch_by_legacy')->getFolderChildrens(
+        $result = $this->container->get('open_wide_publish_service.fetch_by_legacy')->getFolderChildrens(
                     $location, 
                     $currentUser,
-                    $this->container->getParameter('open_wide_service.paginate.max_per_page'), 
+                    $this->container->getParameter('open_wide_publish_service.paginate.max_per_page'), 
                     $currentPage,
                     $category
             );        
@@ -72,10 +72,10 @@ class ServiceFolderViewController extends ViewController
             'content' => $content
         );
 
-        $result = $this->container->get('open_wide_service.fetch_by_legacy')->getLinkForUser(
+        $result = $this->container->get('open_wide_publish_service.fetch_by_legacy')->getLinkForUser(
                     $location, 
                     $currentUser,
-                    $this->container->getParameter('open_wide_service.root.max_per_block')
+                    $this->container->getParameter('open_wide_publish_service.root.max_per_block')
             );        
         
         $params['items'] = $result;
@@ -114,6 +114,6 @@ class ServiceFolderViewController extends ViewController
      * return OpenWide\Bundle\ServiceBundle\Helper\FetchByLegacy
      */
     public function getLegacyContentService() {
-        return $this->container->get( 'open_wide_service.helper' );
+        return $this->container->get( 'open_wide_publish_service.helper' );
     }
 }
