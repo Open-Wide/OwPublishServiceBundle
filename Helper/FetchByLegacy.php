@@ -153,15 +153,16 @@ class FetchByLegacy extends ContainerAware {
         $query->sortClauses = array(
             $this->sortClauseAuto($location)
         );
-        $query->limit = $maxPerBlock;
 
         $searchResult = $this->repository->getSearchService()->findContent($query);
         $subscritions = $this->fetchByUserId($currentUser->id);
-
+        
         $children = array();
+        $compteur = 0;
         foreach ($searchResult->searchHits as $searchHit) {
-            if ($this->hasSubscription($subscritions, $searchHit->valueObject->getVersionInfo()->getContentInfo()->id)) {
+            if ($this->hasSubscription($subscritions, $searchHit->valueObject->getVersionInfo()->getContentInfo()->id) && $compteur < $maxPerBlock) {
                 $children[]['serviceLink'] = $searchHit->valueObject;
+                $compteur++;
             }
         }
 
